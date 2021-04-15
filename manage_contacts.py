@@ -25,7 +25,6 @@ def main_menu_table():
         ["Create Contact(s)", "2"],
         ["Update contact(s)", "3"],
         ["Delete Contact(s)", "4"]])
-        
     print(table_object.draw())
 
 
