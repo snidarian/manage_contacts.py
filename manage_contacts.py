@@ -30,7 +30,6 @@ def main_menu_table():
     print(table_object.draw())
 
 
-
 # main entry prompt
 
 def main_menu():
@@ -40,6 +39,54 @@ def main_menu():
         main_menu_table()
         inputvar = input("--> ")
         
+
+
+# CRUD FUNCTION DEFINITIONS
+
+
+# INSERT
+def insert_record():
+    run=True
+    while run == True:
+        firstname = input("Firstname: ")
+        lastname = input("Lastname: ")
+        sex = input("Sex (m/f): ")
+        phone = input("Phone #: ")
+        email = input("Email Address: ")
+        address = input("Physical Address: ")
+        description = input("Description of contact: ")
+        where_met = input("Where you first met: ")
+        
+        # take values and generate contact-entry dictionary
+        record_dict = { 
+            'firstname' : str(firstname), 
+            'lastname' : str(lastname), 
+            'sex' : str(sex), 
+            'phone' : str(phone),
+            'email' : str(email),
+            'address' : str(address),
+            'description' : str(description),
+            'where we met' : str(where_met)
+            }
+
+        print("Record dictionary:")
+        print(record_dict)
+
+        # Execute insert statement:
+        connection_object.execute(contacts.insert(), record_dict)
+
+        
+        
+
+# SELECT
+def select_record():
+    pass
+# UPDATE
+def update_record():
+    pass
+# DELETE
+def delete_record():
+    pass
 
 
 # ---------------------------------------------------------------------------------
@@ -80,13 +127,14 @@ from sqlalchemy import Table, Column, Integer, String
 contacts = Table(
     'contacts', Meta,
     Column('id', Integer, primary_key = True),
-    Column('Firstname', String),
-    Column('Lastname', String),
-    Column("Sex", String),
-    Column('Phone #', String),
-    Column('Email', String),
-    Column('Address', String),
-    Column('Contact Description', String)
+    Column('firstname', String),
+    Column('lastname', String),
+    Column("sex", String),
+    Column('phone', String),
+    Column('email', String),
+    Column('address', String),
+    Column('description', String),
+    Column('where we met', String)
 )
 
 # Execute the creation of the Table 'contacts'
@@ -102,6 +150,7 @@ if __name__=="__main__":
     print("mark0")
     main_menu()
     print(args.database) # database
+    insert_record()
 
 
 
