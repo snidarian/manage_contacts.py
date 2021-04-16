@@ -30,12 +30,28 @@ def main_menu_table():
     print(table_object.draw())
 
 
+def print_contacts_table():
+    os.system('clear')
+    table_object = texttable.Texttable(0)
+    table_object.set_cols_align(["c", "c", "c", "c", "c", "c", "c", "c", "c"])
+    table_object.set_cols_valign(["t", "t", "t", "t", "t", "t", "t", "t", "t"])
+    selection_object = contacts.select()
+    result = connection_object.execute(selection_object)
+    #record = result.fetchone()
+    table_object.header(["Id", "Firstname", "Lastname", "Sex", "Phone", "Email", "Address", "Description", "Where met"])
+    for row in result:
+        table_object.add_row( [str(row[0]), str(row[1]), str(row[2]), str(row[3]), str(row[4]), str(row[5]), str(row[6]), str(row[7]), str(row[8])] )
+    # draw and print table
+    print(table_object.draw())
+
+
+
 # Main menu entry prompt function
 
 def main_menu():
     inputvar=""
+    os.system('clear')
     while inputvar != "0":
-        os.system('clear')
         main_menu_table()
         inputvar = input("--> ")
         if inputvar == '0':
@@ -88,13 +104,19 @@ def insert_record():
 
 # SELECT
 def select_record():
-    pass
+    print_contacts_table()
 # UPDATE
 def update_record():
     pass
 # DELETE
 def delete_record():
-    pass
+    id_selection = 1.5
+    while int(id_selection) > 0:
+        print_contacts_table()
+        id_selection= input("Enter id of record to delete (0 to quit):\n--> ")
+        deletion_object = contacts.delete().where(contacts.c.id==id_selection)
+        # delete specified record
+        connection_object.execute(deletion_object)
 
 
 # ---------------------------------------------------------------------------------
