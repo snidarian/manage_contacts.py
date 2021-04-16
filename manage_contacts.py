@@ -3,6 +3,7 @@
 # import statements
 import sqlite3 # incase needed to interact with sqlite database
 import sqlalchemy # to interact with database
+from sqlalchemy import text # For writing raw SQL statements in case it's needed
 import texttable # to display information to screen
 import colorama # to color-highlight information for ease of use and clarity
 import os # since this is a terminal program, use of terminal commands will be required
@@ -45,9 +46,21 @@ def print_contacts_table():
     print(table_object.draw())
 
 
+# Get single record and generate table for single record
+
+def select_table_single_record(selection_id):
+    table_object = texttable.Texttable(0)
+    table_object.set_cols_align(["c", "c", "c", "c", "c", "c", "c", "c", "c"])
+    table_object.set_cols_valign(["t", "t", "t", "t", "t", "t", "t", "t", "t"])
+    table_object.header(["id", "Firstname", "Lastname", "Sex", "Phone", "Email", "Address", "Description", "Where met"])
+    # Create selection object that target desired record called for with parameter
+    selection_object = text("SELECT * FROM contacts WHERE contacts.id = :x")
+    result = connection_object.execute(selection_object, x = str(selection_id)).fetchone()
+    table_object.add_row([result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8]])
+    print(table_object.draw())
+
 
 # Main menu entry prompt function
-
 def main_menu():
     inputvar=""
     os.system('clear')
@@ -69,19 +82,51 @@ def main_menu():
 # CRUD FUNCTION DEFINITIONS
 
 
+# evaluates each variable to determine if it's a string 0 or not - returns True or False
+def insert_return_to_main_menu(variable):
+    if variable == "0":
+        return False
+    else:
+        return True
+
 # INSERT
 def insert_record():
     run=True
     while run == True:
+        print("Enter 0 at any prompt to return to the Main menu")
         firstname = input("Firstname: ")
+        run = insert_return_to_main_menu(firstname)
+        if run == False:
+            break
         lastname = input("Lastname: ")
+        run = insert_return_to_main_menu(lastname)
+        if run == False:
+            break
         sex = input("Sex (m/f): ")
+        run = insert_return_to_main_menu(sex)
+        if run == False:
+            break
         phone = input("Phone #: ")
+        run = insert_return_to_main_menu(phone)
+        if run == False:
+            break
         email = input("Email Address: ")
+        run = insert_return_to_main_menu(email)
+        if run == False:
+            break
         address = input("Physical Address: ")
+        run = insert_return_to_main_menu(address)
+        if run == False:
+            break
         description = input("Description of contact: ")
+        run = insert_return_to_main_menu(description)
+        if run == False:
+            break
         where_met = input("Where you first met: ")
-        
+        run = insert_return_to_main_menu(where_met)
+        if run == False:
+            break
+
         # take values and generate contact-entry dictionary
         record_dict = { 
             'firstname' : str(firstname), 
@@ -101,13 +146,33 @@ def insert_record():
         connection_object.execute(contacts.insert(), record_dict)
 
 
-
 # SELECT
 def select_record():
-    print_contacts_table()
+    select_all = input("Select all contacts? (y/n)")
+    select_all = select_all.upper()
+    if select_all == 'Y':
+        print_contacts_table()
+    elif select_all == 'N':
+        pass # add regex search selection statement function here
+    else:
+        print("Error: Invalid selection...")
+        os.system('sleep 2')
 # UPDATE
 def update_record():
-    pass
+    run = True
+    while run == True:
+        os.system('clear')
+        print_contacts_table()
+        print("Type id of record to update (0 to return to main menu)")
+        selection_id = input("--> ")
+        if selection_id == "0":
+            break
+        elif int(selection_id) > 0:
+            select_table_single_record(selection_id)
+            
+        else:
+            print("Error: Invalid entry")
+
 # DELETE
 def delete_record():
     id_selection = 1.5
