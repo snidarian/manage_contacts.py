@@ -30,6 +30,24 @@ def main_menu_table():
         ["Delete Contact(s)", "4"]])
     print(table_object.draw())
 
+# Generate update menu table (Which column of selected record to update)
+def generate_update_menu_table():
+    table_object = texttable.Texttable(0) # zero specifies variable width
+    table_object.set_cols_align(["c", "c"])
+    table_object.set_cols_valign(["t", "t"])
+    print("Enter value to update (0 to quit to main menu)")
+    table_object.add_rows([
+        ["Operation", "Entry Value"],
+        ["Firstname", "1"],
+        ["Lastname", "2"],
+        ["Sex", "3"],
+        ["Phone", "4"],
+        ["email", "5"],
+        ["Address", "6"],
+        ["Description", "7"],
+        ["Where met", "8"]])
+    print(table_object.draw())
+
 
 def print_contacts_table():
     os.system('clear')
@@ -165,13 +183,59 @@ def update_record():
         print_contacts_table()
         print("Type id of record to update (0 to return to main menu)")
         selection_id = input("--> ")
-        if selection_id == "0":
-            break
-        elif int(selection_id) > 0:
-            select_table_single_record(selection_id)
-            
-        else:
-            print("Error: Invalid entry")
+        try:
+            if selection_id == "0":
+                break
+            elif int(selection_id) > 0:
+                select_table_single_record(selection_id) # function - draw table with single record and print
+                generate_update_menu_table() # update menu table
+                updatevar = input("Enter value to update (0 to quit)\n--> ")
+            try:
+                if int(updatevar) == 0:
+                    break
+                elif int(updatevar) == 1:
+                    new_value = input("Enter new firstname value: ")
+                    update_object = contacts.update().where(contacts.c.id==selection_id).values(firstname=new_value)
+                    connection_object.execute(update_object)
+                elif int(updatevar) == 2:
+                    new_value = input("Enter new lastname value: ")
+                    update_object = contacts.update().where(contacts.c.id==selection_id).values(lastname=new_value)
+                    connection_object.execute(update_object)
+                elif int(updatevar) == 3:
+                    new_value = input("Enter new sex value: ")
+                    update_object = contacts.update().where(contacts.c.id==selection_id).values(sex=new_value)
+                    connection_object.execute(update_object)
+                elif int(updatevar) == 4:
+                    new_value = input("Enter new phone value: ")
+                    update_object = contacts.update().where(contacts.c.id==selection_id).values(phone=new_value)
+                    connection_object.execute(update_object)
+                elif int(updatevar) == 5:
+                    new_value = input("Enter new email value: ")
+                    update_object = contacts.update().where(contacts.c.id==selection_id).values(email=new_value)
+                    connection_object.execute(update_object)
+                elif int(updatevar) == 6:
+                    new_value = input("Enter new address value: ")
+                    update_object = contacts.update().where(contacts.c.id==selection_id).values(address=new_value)
+                    connection_object.execute(update_object)
+                elif int(updatevar) == 7:
+                    new_value = input("Enter new description value: ")
+                    update_object = contacts.update().where(contacts.c.id==selection_id).values(description=new_value)
+                    connection_object.execute(update_object)
+                elif int(updatevar) == 8:
+                    new_value = input("Enter new 'where met' value: ")
+                    update_object = contacts.update().where(contacts.c.id==selection_id).values(where_met=new_value)
+                    connection_object.execute(update_object)
+                else:
+                    print("Error: Invalid Entry")
+            except:
+                print("Error: Invalid Entry")
+                os.system('sleep 2')
+        except:
+            print("Error: Invalid Entry")
+            os.system('sleep 2')
+        
+
+
 
 # DELETE
 def delete_record():
@@ -229,7 +293,7 @@ contacts = Table(
     Column('email', String),
     Column('address', String),
     Column('description', String),
-    Column('where we met', String)
+    Column('where_met', String)
 )
 
 # Execute the creation of the Table 'contacts'
@@ -243,9 +307,10 @@ Meta.create_all(engine)
 
 if __name__=="__main__":
     print("mark0")
+    print("interacting with database: " + args.database) # database
     main_menu()
-    print(args.database) # database
-    insert_record()
+    
+
 
 
 
