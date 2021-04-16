@@ -15,7 +15,7 @@ import argparse
 
 # function definitions
 
-# generate main menu prompt table
+# Generate main menu prompt table
 def main_menu_table():
     table_object = texttable.Texttable(0) # zero specifies variable width
     table_object.set_cols_align(["c", "c"])
@@ -30,7 +30,7 @@ def main_menu_table():
     print(table_object.draw())
 
 
-# main entry prompt
+# Main menu entry prompt function
 
 def main_menu():
     inputvar=""
@@ -38,7 +38,16 @@ def main_menu():
         os.system('clear')
         main_menu_table()
         inputvar = input("--> ")
-        
+        if inputvar == '0':
+            break
+        elif inputvar == '1':
+            select_record()
+        elif inputvar == '2':
+            insert_record()
+        elif inputvar == '3':
+            update_record()
+        elif inputvar == '4':
+            delete_record()
 
 
 # CRUD FUNCTION DEFINITIONS
@@ -69,14 +78,13 @@ def insert_record():
             'where we met' : str(where_met)
             }
 
-        print("Record dictionary:")
-        print(record_dict)
+        #print("Record dictionary:")
+        #print(record_dict)
 
         # Execute insert statement:
         connection_object.execute(contacts.insert(), record_dict)
 
-        
-        
+
 
 # SELECT
 def select_record():
