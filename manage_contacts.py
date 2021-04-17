@@ -98,20 +98,24 @@ def select_table_single_record(selection_id):
 def main_menu():
     inputvar=""
     os.system('clear')
-    while inputvar != "0":
-        main_menu_table()
-        inputvar = input("--> ")
-        if inputvar == '0':
-            break
-        elif inputvar == '1':
-            select_record()
-        elif inputvar == '2':
-            insert_record()
-        elif inputvar == '3':
-            update_record()
-        elif inputvar == '4':
-            delete_record()
-
+    try:
+        while inputvar != "0":
+            main_menu_table()
+            print(lb)
+            inputvar = input("--> ")
+            print(reset)
+            if inputvar == '0':
+                break
+            elif inputvar == '1':
+                select_record()
+            elif inputvar == '2':
+                insert_record()
+            elif inputvar == '3':
+                update_record()
+            elif inputvar == '4':
+                delete_record()
+    except:
+        print("Menu terminated")
 
 # CRUD FUNCTION DEFINITIONS
 
@@ -182,12 +186,14 @@ def insert_record():
 
 # SELECT
 def select_record():
-    select_all = input("Select all contacts? (y/n): ")
+    select_all = input("Select all contacts? " + ly + "(y/n): " + reset)
     select_all = select_all.upper()
     if select_all == 'Y':
         print_contacts_table()
     elif select_all == 'N':
+        print(lb)
         regex = input('SQL regex--> ')
+        print(reset)
         selection_object = text("SELECT * FROM contacts WHERE contacts.firstname LIKE :x")
         result = connection_object.execute(selection_object, x = str(regex)).fetchall()
         generate_table_and_print(result)
