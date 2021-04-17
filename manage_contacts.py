@@ -22,6 +22,10 @@ ly = Fore.LIGHTYELLOW_EX
 reset = Style.RESET_ALL
 
 
+# max table width variable
+max_table_width = 120
+
+
 # Function Definitions
 
 # Generate main menu prompt table
@@ -59,7 +63,7 @@ def generate_update_menu_table():
 
 def print_contacts_table():
     os.system('clear')
-    table_object = texttable.Texttable(0)
+    table_object = texttable.Texttable(max_table_width)
     table_object.set_cols_align(["c", "c", "c", "c", "c", "c", "c", "c", "c"])
     table_object.set_cols_valign(["t", "t", "t", "t", "t", "t", "t", "t", "t"])
     selection_object = contacts.select()
@@ -73,7 +77,7 @@ def print_contacts_table():
 
 
 def generate_table_and_print(rows_list):
-    table_object = texttable.Texttable(0) # variable size 0
+    table_object = texttable.Texttable(max_table_width) # variable size 0
     table_object.set_cols_align(["c", "c", "c", "c", "c", "c", "c", "c", "c"])
     table_object.set_cols_valign(["t", "t", "t", "t", "t", "t", "t", "t", "t"])
     table_object.header(["id", "Firstname", "Lastname", "Sex", "Phone", "Email", "Address", "Description", "Where met"])
@@ -83,7 +87,7 @@ def generate_table_and_print(rows_list):
 
 # Get single record and generate table for single record
 def select_table_single_record(selection_id):
-    table_object = texttable.Texttable(0)
+    table_object = texttable.Texttable(max_table_width)
     table_object.set_cols_align(["c", "c", "c", "c", "c", "c", "c", "c", "c"])
     table_object.set_cols_valign(["t", "t", "t", "t", "t", "t", "t", "t", "t"])
     table_object.header(["id", "Firstname", "Lastname", "Sex", "Phone", "Email", "Address", "Description", "Where met"])
@@ -114,8 +118,9 @@ def main_menu():
                 update_record()
             elif inputvar == '4':
                 delete_record()
-    except:
-        print("Menu terminated")
+    except KeyboardInterrupt:
+        print("Program terminated from keyboard")
+
 
 # CRUD FUNCTION DEFINITIONS
 
