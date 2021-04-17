@@ -5,16 +5,24 @@ import sqlite3 # incase needed to interact with sqlite database
 import sqlalchemy # to interact with database
 from sqlalchemy import text # For writing raw SQL statements in case it's needed
 import texttable # to display information to screen
-import colorama # to color-highlight information for ease of use and clarity
+from colorama import Fore, Back, Style, init # to color-highlight information for ease of use and clarity
 import os # since this is a terminal program, use of terminal commands will be required
 import argparse
 
 
 # color variable escape sequence definitions
+b = Fore.BLUE
+r = Fore.RED
+g = Fore.GREEN
+w = Fore.WHITE
+c = Fore.CYAN
+m = Fore.MAGENTA
+lb = Fore.LIGHTBLUE_EX
+ly = Fore.LIGHTYELLOW_EX
+reset = Style.RESET_ALL
 
 
-
-# function definitions
+# Function Definitions
 
 # Generate main menu prompt table
 def main_menu_table():
@@ -64,8 +72,16 @@ def print_contacts_table():
     print(table_object.draw())
 
 
-# Get single record and generate table for single record
+def generate_table_and_print(rows_list):
+    table_object = texttable.Texttable(0) # variable size 0
+    table_object.set_cols_align(["c", "c", "c", "c", "c", "c", "c", "c", "c"])
+    table_object.set_cols_valign(["t", "t", "t", "t", "t", "t", "t", "t", "t"])
+    table_object.header(["id", "Firstname", "Lastname", "Sex", "Phone", "Email", "Address", "Description", "Where met"])
+    for row in rows_list:
+        table_object.add_row([row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]])
+    print(table_object.draw())
 
+# Get single record and generate table for single record
 def select_table_single_record(selection_id):
     table_object = texttable.Texttable(0)
     table_object.set_cols_align(["c", "c", "c", "c", "c", "c", "c", "c", "c"])
@@ -166,12 +182,15 @@ def insert_record():
 
 # SELECT
 def select_record():
-    select_all = input("Select all contacts? (y/n)")
+    select_all = input("Select all contacts? (y/n): ")
     select_all = select_all.upper()
     if select_all == 'Y':
         print_contacts_table()
     elif select_all == 'N':
-        pass # add regex search selection statement function here
+        regex = input('SQL regex--> ')
+        selection_object = text("SELECT * FROM contacts WHERE contacts.firstname LIKE :x")
+        result = connection_object.execute(selection_object, x = str(regex)).fetchall()
+        generate_table_and_print(result)
     else:
         print("Error: Invalid selection...")
         os.system('sleep 2')
@@ -234,7 +253,6 @@ def update_record():
             print("Error: Invalid Entry")
             os.system('sleep 2')
         
-
 
 
 # DELETE
