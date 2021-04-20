@@ -121,6 +121,7 @@ def main_menu():
                 select_record()
             elif inputvar == '2':
                 insert_record()
+                os.system('clear')
             elif inputvar == '3':
                 update_record()
             elif inputvar == '4':
@@ -186,7 +187,7 @@ def insert_record():
             'email' : str(email),
             'address' : str(address),
             'description' : str(description),
-            'where we met' : str(where_met)
+            'where_met' : str(where_met)
             }
 
         #print("Record dictionary:")
@@ -285,6 +286,7 @@ def delete_record():
         deletion_object = contacts.delete().where(contacts.c.id==id_selection)
         # delete specified record
         connection_object.execute(deletion_object)
+    os.system('clear')
 
 
 # ---------------------------------------------------------------------------------
