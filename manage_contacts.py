@@ -23,7 +23,7 @@ reset = Style.RESET_ALL
 
 
 # max table width variable
-max_table_width = 120
+max_table_width = 105
 
 
 # Function Definitions
@@ -40,7 +40,9 @@ def main_menu_table():
         ["Create Contact(s)", "2"],
         ["Update contact(s)", "3"],
         ["Delete Contact(s)", "4"]])
+    print(ly)
     print(table_object.draw())
+    print(reset)
 
 # Generate update menu table (Which column of selected record to update)
 def generate_update_menu_table():
@@ -58,7 +60,9 @@ def generate_update_menu_table():
         ["Address", "6"],
         ["Description", "7"],
         ["Where met", "8"]])
+    print(ly)
     print(table_object.draw())
+    print(reset)
 
 
 def print_contacts_table():
@@ -66,6 +70,7 @@ def print_contacts_table():
     table_object = texttable.Texttable(max_table_width)
     table_object.set_cols_align(["c", "c", "c", "c", "c", "c", "c", "c", "c"])
     table_object.set_cols_valign(["t", "t", "t", "t", "t", "t", "t", "t", "t"])
+    table_object.set_cols_dtype(["t", "t", "t", "t", "t", "t", "t", "t", "t", ])
     selection_object = contacts.select()
     result = connection_object.execute(selection_object)
     #record = result.fetchone()
@@ -80,6 +85,7 @@ def generate_table_and_print(rows_list):
     table_object = texttable.Texttable(max_table_width) # variable size 0
     table_object.set_cols_align(["c", "c", "c", "c", "c", "c", "c", "c", "c"])
     table_object.set_cols_valign(["t", "t", "t", "t", "t", "t", "t", "t", "t"])
+    table_object.set_cols_dtype(["t", "t", "t", "t", "t", "t", "t", "t", "t", ])
     table_object.header(["id", "Firstname", "Lastname", "Sex", "Phone", "Email", "Address", "Description", "Where met"])
     for row in rows_list:
         table_object.add_row([row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]])
@@ -90,6 +96,7 @@ def select_table_single_record(selection_id):
     table_object = texttable.Texttable(max_table_width)
     table_object.set_cols_align(["c", "c", "c", "c", "c", "c", "c", "c", "c"])
     table_object.set_cols_valign(["t", "t", "t", "t", "t", "t", "t", "t", "t"])
+    table_object.set_cols_dtype(["t", "t", "t", "t", "t", "t", "t", "t", "t", ])
     table_object.header(["id", "Firstname", "Lastname", "Sex", "Phone", "Email", "Address", "Description", "Where met"])
     # Create selection object that target desired record called for with parameter
     selection_object = text("SELECT * FROM contacts WHERE contacts.id = :x")
@@ -197,9 +204,11 @@ def select_record():
         print_contacts_table()
     elif select_all == 'N':
         print(lb)
+        print("SQL wilcards: '%' = *, '_' = . ")
         regex = input('SQL regex--> ')
         print(reset)
-        selection_object = text("SELECT * FROM contacts WHERE contacts.firstname LIKE :x")
+        os.system('clear')
+        selection_object = text("SELECT * FROM contacts WHERE contacts.firstname or contacts.lastname LIKE :x")
         result = connection_object.execute(selection_object, x = str(regex)).fetchall()
         generate_table_and_print(result)
     else:
@@ -211,15 +220,16 @@ def update_record():
     while run == True:
         os.system('clear')
         print_contacts_table()
-        print("Type id of record to update (0 to return to main menu)")
-        selection_id = input("--> ")
+        print(w + "Type id of record to update (0 to return to main menu)" + reset)
+        selection_id = input(g + "--> " + reset)
+        os.system('clear')
         try:
             if selection_id == "0":
                 break
             elif int(selection_id) > 0:
                 select_table_single_record(selection_id) # function - draw table with single record and print
                 generate_update_menu_table() # update menu table
-                updatevar = input("Enter value to update (0 to quit)\n--> ")
+                updatevar = input(w + "Enter value to update (0 to quit)\n" + g + "--> " + reset)
             try:
                 if int(updatevar) == 0:
                     break
@@ -271,7 +281,7 @@ def delete_record():
     id_selection = 1.5
     while int(id_selection) > 0:
         print_contacts_table()
-        id_selection= input("Enter id of record to delete (0 to quit):\n--> ")
+        id_selection= input(w + "Enter id of record to delete (0 to quit):\n" + g + "--> " + reset)
         deletion_object = contacts.delete().where(contacts.c.id==id_selection)
         # delete specified record
         connection_object.execute(deletion_object)
